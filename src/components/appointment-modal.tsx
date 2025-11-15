@@ -1,12 +1,15 @@
 "use client"
 
-import type React from "react"
-import type { Veterinarian } from "@/types"
-
-import { useState } from "react"
+import React, { useState, ChangeEvent, FormEvent } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { X } from 'lucide-react'
+import { X } from "lucide-react"
+
+interface Veterinarian {
+  id: string
+  name: string
+  specialty: string
+}
 
 interface Appointment {
   id?: string
@@ -26,10 +29,15 @@ interface AppointmentModalProps {
   appointment?: Appointment
   onSave: (appointment: Appointment) => void
   onClose: () => void
-  veterinarians?: any[]
+  veterinarians?: Veterinarian[]
 }
 
-export function AppointmentModal({ appointment, onSave, onClose, veterinarians = [] }: AppointmentModalProps) {
+export const AppointmentModal: React.FC<AppointmentModalProps> = ({
+  appointment,
+  onSave,
+  onClose,
+  veterinarians = [],
+}) => {
   const [formData, setFormData] = useState<Appointment>(
     appointment || {
       patientName: "",
@@ -41,42 +49,33 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
       diagnosis: "",
       status: "scheduled",
       patientImage: "",
-      imageFile: undefined,
-    },
+      imageFile: null,
+    }
   )
 
-  const [patientImage, setPatientImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>("")
-  const [filteredVeterinarians, setFilteredVeterinarians] = useState<any[]>([])
+  const [filteredVeterinarians, setFilteredVeterinarians] = useState<Veterinarian[]>([])
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setPatientImage(file)
+      setFormData({ ...formData, imageFile: file })
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
+      reader.onloadend = () => setFormData({ ...formData, patientImage: reader.result as string, imageFile: file })
       reader.readAsDataURL(file)
+      setImagePreview(URL.createObjectURL(file))
     }
   }
 
   const handleSpecialtyChange = (specialty: string) => {
     setFormData({ ...formData, specialty, veterinarian: "" })
-    
     const vetsBySpecialty = veterinarians.filter((v) => v.specialty === specialty)
     setFilteredVeterinarians(vetsBySpecialty)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
-    const dataToSave = {
-      ...formData,
-      patientImage: imagePreview,
-      imageFile: patientImage,
-    }
-    onSave(dataToSave)
+    onSave(formData)
   }
 
   return (
@@ -84,13 +83,12 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
       <div className="bg-card rounded-2xl shadow-xl max-w-md w-full border border-border max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card">
           <h2 className="text-xl font-bold text-foreground">{appointment ? "Editar Consulta" : "Agendar Consulta"}</h2>
-          <button onClick={onClose} aria-label="Fechar" title="Fechar" className="text-foreground/60 hover:text-foreground">
+          <button onClick={onClose} aria-label="Fechar" className="text-foreground/60 hover:text-foreground">
             <X size={24} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {}
           <div>
             <label htmlFor="patientImage" className="block text-sm font-medium text-foreground mb-2">Foto do Animal (Opcional)</label>
             <div className="relative group">
@@ -106,7 +104,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
                 {imagePreview ? (
                   <div className="space-y-2">
                     <img
-                      src={imagePreview || "/placeholder.svg"}
+                      src={imagePreview}
                       alt="Preview"
                       className="w-20 h-20 rounded-lg mx-auto object-cover"
                     />
@@ -139,7 +137,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
             <Input
               id="patientName"
               value={formData.patientName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, patientName: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
               placeholder="Ex: Rex"
             />
           </div>
@@ -150,7 +148,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
               id="appointmentDate"
               type="date"
               value={formData.date}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, date: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             />
           </div>
 
@@ -160,7 +158,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
               id="appointmentTime"
               type="time"
               value={formData.time}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, time: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
             />
           </div>
 
@@ -169,7 +167,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
             <select
               id="specialty"
               value={formData.specialty}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleSpecialtyChange(e.target.value)}
+              onChange={(e) => handleSpecialtyChange(e.target.value)}
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
             >
               <option value="">Selecione uma especialidade</option>
@@ -187,7 +185,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
             <select
               id="veterinarian"
               value={formData.veterinarian}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, veterinarian: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, veterinarian: e.target.value })}
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
             >
               <option value="">
@@ -206,7 +204,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
             <textarea
               id="diagnosis"
               value={formData.diagnosis}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData({ ...formData, diagnosis: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
               placeholder="Descreva o diagnóstico ou motivo da consulta"
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
               rows={3}
@@ -218,12 +216,7 @@ export function AppointmentModal({ appointment, onSave, onClose, veterinarians =
             <select
               id="status"
               value={formData.status}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setFormData({
-                  ...formData,
-                  status: e.target.value as "scheduled" | "completed" | "cancelled",
-                })
-              }
+              onChange={(e) => setFormData({ ...formData, status: e.target.value as Appointment["status"] })}
               className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
             >
               <option value="scheduled">Agendada</option>

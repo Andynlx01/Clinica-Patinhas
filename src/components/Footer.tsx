@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           
-          {/* Logo e Descrição */}
+          {}
           <div>
             <h3 className="text-2xl font-bold mb-3">Clínica Patinhas</h3>
             <p className="text-primary-foreground/80">
@@ -22,7 +22,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Horário de Funcionamento */}
+          {}
           <div>
             <h4 className="text-lg font-bold mb-4">Horário de Funcionamento</h4>
             <p className="text-primary-foreground/80 mb-2">Segunda a Sexta: 8h - 19h</p>
@@ -30,7 +30,7 @@ export default function Footer() {
             <p className="text-primary-foreground/80">Domingo: Fechado</p>
           </div>
 
-          {/* Contato */}
+          {}
           <div>
             <h4 className="text-lg font-bold mb-4">Entre em Contato</h4>
             <p className="text-primary-foreground/80 mb-2">Telefone: (83) 3456-7890</p>
@@ -40,13 +40,13 @@ export default function Footer() {
 
         </div>
 
-        {/* Endereço */}
+        {}
         <div className="border-t border-primary-foreground/20 mt-8 pt-8">
           <p className="text-center text-primary-foreground/80 mb-4">
             Rua das Patinhas, 123 — Bairro Alto do Mateus — João Pessoa, PB
           </p>
 
-          {/* Parte minimalista do segundo footer (unificado) */}
+          {}
           <p className="text-center text-primary-foreground/70">
             Clínica Patinhas &copy; {new Date().getFullYear()}. Todos os direitos reservados.
           </p>

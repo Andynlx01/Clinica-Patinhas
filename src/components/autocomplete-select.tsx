@@ -22,7 +22,9 @@ export function AutocompleteSelect({
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const filtered = options.filter((option) => option.toLowerCase().includes(search.toLowerCase()))
+    const filtered = options.filter((option) =>
+      option.toLowerCase().includes(search.toLowerCase())
+    )
     setFilteredOptions(filtered)
   }, [search, options])
 
@@ -61,6 +63,7 @@ export function AutocompleteSelect({
           }}
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
+          aria-label={placeholder}
           className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
@@ -68,30 +71,42 @@ export function AutocompleteSelect({
             <button
               type="button"
               onClick={handleClear}
+              aria-label="Limpar seleção"
               className="p-1 hover:bg-foreground/10 rounded transition-colors"
             >
               <X size={18} className="text-foreground/50" />
             </button>
           )}
-          <ChevronDown size={18} className={`text-foreground/50 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+          <ChevronDown
+            size={18}
+            className={`text-foreground/50 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          />
         </div>
       </div>
 
       {isOpen && filteredOptions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+        <ul
+          role="listbox"
+          className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto"
+        >
           {filteredOptions.map((option) => (
-            <button
+            <li
               key={option}
-              type="button"
+              role="option"
+              aria-selected={value === option}
+              tabIndex={0}
               onClick={() => handleSelect(option)}
-              className={`w-full text-left px-4 py-3 hover:bg-primary/10 transition-colors border-b border-border/50 last:border-b-0 ${
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSelect(option)
+              }}
+              className={`w-full px-4 py-3 hover:bg-primary/10 transition-colors cursor-pointer ${
                 value === option ? "bg-primary/20 text-primary font-medium" : "text-foreground"
               }`}
             >
               {option}
-            </button>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       {isOpen && search && filteredOptions.length === 0 && (

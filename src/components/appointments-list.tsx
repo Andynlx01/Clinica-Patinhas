@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Edit2, Trash2, Calendar, User } from 'lucide-react'
+import React, { useState } from "react"
+import { Edit2, Trash2, Calendar, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Appointment {
@@ -26,16 +26,16 @@ interface AppointmentsListProps {
   onRequireLogin: () => void
 }
 
-export function AppointmentsList({
+export const AppointmentsList: React.FC<AppointmentsListProps> = ({
   appointments,
   onEdit,
   onDelete,
   isLoggedIn,
   onRequireLogin,
-}: AppointmentsListProps) {
+}) => {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: Appointment["status"]) => {
     switch (status) {
       case "scheduled":
         return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
@@ -43,8 +43,6 @@ export function AppointmentsList({
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
       case "cancelled":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-      default:
-        return ""
     }
   }
 
@@ -69,7 +67,7 @@ export function AppointmentsList({
   }
 
   const getSpeciesImage = (species?: string) => {
-    const speciesMap: { [key: string]: string } = {
+    const speciesMap: Record<string, string> = {
       cachorro: "/dog-portrait.jpg",
       gato: "/cat-portrait.jpg",
       coelho: "/rabbit-portrait.jpg",
@@ -94,7 +92,7 @@ export function AppointmentsList({
             <div className="flex gap-6">
               <div className="flex-shrink-0">
                 <img
-                  src={appointment.patientImage || getSpeciesImage(appointment.patientSpecies) || "/placeholder.svg"}
+                  src={appointment.patientImage || getSpeciesImage(appointment.patientSpecies)}
                   alt={appointment.patientName}
                   className="w-24 h-24 rounded-xl object-cover shadow-md"
                 />
@@ -104,13 +102,15 @@ export function AppointmentsList({
                 <div className="flex items-center gap-3 mb-4">
                   <h3 className="text-2xl font-bold text-foreground">{appointment.patientName}</h3>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(appointment.status)}`}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                      appointment.status
+                    )}`}
                   >
                     {appointment.status === "scheduled"
                       ? "Agendada"
                       : appointment.status === "completed"
-                        ? "Realizada"
-                        : "Cancelada"}
+                      ? "Realizada"
+                      : "Cancelada"}
                   </span>
                 </div>
 
@@ -172,8 +172,7 @@ export function AppointmentsList({
                 <div className="bg-card rounded-2xl p-8 shadow-xl max-w-md w-full mx-4">
                   <h2 className="text-2xl font-bold text-foreground mb-4">Deletar Consulta</h2>
                   <p className="text-foreground/70 mb-8">
-                    Tem certeza que deseja deletar a consulta de {appointment.patientName}? Esta ação não pode ser
-                    desfeita.
+                    Tem certeza que deseja deletar a consulta de {appointment.patientName}? Esta ação não pode ser desfeita.
                   </p>
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => setConfirmDelete(null)} className="flex-1">
