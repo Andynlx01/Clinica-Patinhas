@@ -3,7 +3,6 @@ import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Layout from './components/Layout'
 
-// Pages
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
@@ -21,12 +20,12 @@ export default function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Public Routes */}
+          {}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
 
-          {/* Protected Routes */}
+          {}
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/patients" element={<PatientsPage />} />
@@ -37,7 +36,7 @@ export default function App() {
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
 
-          {/* Not Found */}
+          {}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>

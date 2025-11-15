@@ -1,45 +1,35 @@
-import { useState, useCallback } from 'react'
-import { ApiResponse, ApiError } from '../types'
+/**
+ * Hook customizado para chamadas de API com loading e error states
+ * Facilita gerenciamento de estados assíncronos
+ */
+
+import { useState, useCallback } from "react"
 
 interface UseApiState<T> {
   data: T | null
   loading: boolean
-  error: ApiError | null
+  error: string | null
 }
 
-export function useApi<T>(
-  apiCall: () => Promise<ApiResponse<T>>
-) {
+export function useApi<T>(apiFunction: (...args: any[]) => Promise<{ data: T | null; error: string | null }>) {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
     loading: false,
     error: null,
   })
 
-  const execute = useCallback(async () => {
-    setState({ data: null, loading: true, error: null })
-    try {
-      const response = await apiCall()
-      if (response.success && response.data) {
-        setState({ data: response.data, loading: false, error: null })
-        return response.data
-      } else {
-        const error: ApiError = {
-          message: response.error || 'Erro desconhecido',
-          code: 'API_ERROR',
-        }
-        setState({ data: null, loading: false, error })
-        return null
-      }
-    } catch (err: any) {
-      const error: ApiError = {
-        message: err.message || 'Erro ao processar requisição',
-        code: err.code || 'UNKNOWN_ERROR',
-      }
-      setState({ data: null, loading: false, error })
-      return null
-    }
-  }, [apiCall])
+  const execute = useCallback(
+    async (...args: any[]) => {
+      setState({ data: null, loading: true, error: null })
+      const { data, error } = await apiFunction(...args)
+      setState({ data, loading: false, error })
+      return { data, error }
+    },
+    [apiFunction],
+  )
 
-  return { ...state, execute }
+  return {
+    ...state,
+    execute,
+  }
 }

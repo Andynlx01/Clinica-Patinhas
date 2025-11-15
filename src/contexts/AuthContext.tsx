@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, ReactNode } from 'react'
 import { User } from '../types'
 import { authService } from '../services/auth.service'
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean

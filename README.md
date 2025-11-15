@@ -101,43 +101,6 @@ npm run preview  # Preview da build
 npm run lint     # Verifica erros de linting
 \`\`\`
 
-## Estrutura do Projeto
-
-\`\`\`
-src/
-├── components/          # Componentes reutilizáveis
-│   ├── Header.tsx
-│   ├── Sidebar.tsx
-│   ├── Layout.tsx
-│   ├── ProtectedRoute.tsx
-│   └── Footer.tsx
-├── pages/              # Páginas da aplicação
-│   ├── HomePage.tsx
-│   ├── LoginPage.tsx
-│   ├── SignupPage.tsx
-│   ├── DashboardPage.tsx
-│   ├── PatientsPage.tsx
-│   ├── AppointmentsPage.tsx
-│   └── ...
-├── hooks/              # React hooks customizados
-│   ├── useApi.ts
-│   └── useAuth.ts
-├── services/           # Serviços de API
-│   ├── api.ts
-│   ├── auth.service.ts
-│   ├── patient.service.ts
-│   ├── appointment.service.ts
-│   └── ...
-├── schemas/            # Validações Zod
-│   └── index.ts
-├── types/              # Interfaces TypeScript
-│   └── index.ts
-├── contexts/           # React Context
-│   └── AuthContext.tsx
-├── App.tsx            # Componente raiz
-├── main.tsx           # Ponto de entrada
-└── index.css          # Estilos globais
-\`\`\`
 
 ## Integração com Backend
 
