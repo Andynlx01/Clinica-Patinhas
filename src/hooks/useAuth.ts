@@ -1,7 +1,3 @@
-/**
- * Hook para gerenciar autenticação do usuário
- * Mantém token em localStorage e dados do usuário sincronizados
- */
 
 import { useState, useCallback, useEffect } from "react"
 import { authAPI, User } from "@/lib/api"
@@ -12,7 +8,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Carregar token do localStorage ao iniciar
+
   useEffect(() => {
     const storedToken = localStorage.getItem("auth_token")
     const storedUser = localStorage.getItem("auth_user")
